@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'https://localhost:9098/swagger-ui.html'; // Replace with your actual API base URL
+const BASE_URL = 'https://localhost:9098/swagger-ui.html'; //  actual API base URL
 
 const CountryService = {
   getListOfCountries: async () => {
