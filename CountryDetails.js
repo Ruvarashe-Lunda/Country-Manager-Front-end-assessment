@@ -1,105 +1,58 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import CountryService from './CountryService';
+import React, { useState } from 'react';
 
-const CountryDetails = () => {
-  const { id } = useParams();
-  const [country, setCountry] = useState(null);
+const CountryList = () => {
+  const [countries, setCountries] = useState([
+    { id: 1, name: 'Country 1' },
+    { id: 2, name: 'Country 2' },
+    { id: 3, name: 'Country 3' }
+  ]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const countryData = await CountryService.getCountryById(id);
-      setCountry(countryData);
-    };
+  const [selectedCountry, setSelectedCountry] = useState(null);
 
-    fetchData();
-  }, [id]);
+  const handleViewMore = (countryId) => {
+    // Fetch the country details from an API using the countryId
+    // Replace the fetchCountryDetails function with your own API call
+    fetchCountryDetails(countryId)
+      .then((countryData) => {
+        setSelectedCountry(countryData);
+      })
+      .catch((error) => {
+        console.error('Error fetching country details:', error);
+      });
+  };
 
-  if (!country) {
-    return <div>Loading...</div>;
-  }
+  const fetchCountryDetails = (countryId) => {
+    // Simulating an asynchronous API call using a Promise
+    return new Promise((resolve, reject) => {
+      // Replace this with your own API endpoint
+      setTimeout(() => {
+        // Simulated country data
+        const countryData = { id: countryId, name: `Country ${countryId}`, population: 1000000 };
+        resolve(countryData);
+      }, 1000);
+    });
+  };
 
   return (
     <div>
-      <h2>{country.name}</h2>
-      <p>Population: {country.population}</p>
-      <p>Capital: {country.capital}</p>
+      <h1>Country List</h1>
+      {countries.map((country) => (
+        <div key={country.id}>
+          <p>{country.name}</p>
+          <button onClick={() => handleViewMore(country.id)}>View More</button>
+        </div>
+      ))}
+      {selectedCountry && (
+        <div>
+          <h2>Country Details</h2>
+          <p>ID: {selectedCountry.id}</p>
+          <p>Name: {selectedCountry.name}</p>
+          {/* Display additional country details */}
+          <p>Population: {selectedCountry.population}</p>
+        </div>
+      )}
     </div>
   );
 };
 
-
-export default CountryDetails;
-
-document.addEventListener("DOMContentLoaded", function () {
-    const countriesListDiv = document.getElementById("countries-list");
-    const countryDetailsDiv = document.getElementById("country-details");
-    const countryInfoDiv = document.getElementById("country-info");
-    const goBackButton = document.getElementById("go-back-btn");
-    
-    // Mock data for demonstration purposes
-    const countriesData = [
-      { id: 1, name: "Country 1", population: 10000000, capital: "Capital 1" },
-      { id: 2, name: "Country 2", population: 20000000, capital: "Capital 2" },
-      { id: 3, name: "Country 3", population: 30000000, capital: "Capital 3" }
-    ];
-  
-    // Display the list of countries
-    function displayCountries() {
-      countriesListDiv.innerHTML = "";
-    
-      countriesData.forEach(country => {
-        const countryDiv = document.createElement("div");
-        countryDiv.classList.add("country");
-  
-        const nameElement = document.createElement("p");
-        nameElement.innerText = `Name: ${country.name}`;
-        countryDiv.appendChild(nameElement);
-  
-        const populationElement = document.createElement("p");
-        populationElement.innerText = `Population: ${country.population}`;
-        countryDiv.appendChild(populationElement);
-  
-        const capitalElement = document.createElement("p");
-        capitalElement.innerText = `Capital: ${country.capital}`;
-        countryDiv.appendChild(capitalElement);
-  
-        const viewMoreButton = document.createElement("button");
-        viewMoreButton.innerText = "View More";
-        viewMoreButton.addEventListener("click", function () {
-          showCountryDetails(country.id);
-        });
-        countryDiv.appendChild(viewMoreButton);
-  
-        countriesListDiv.appendChild(countryDiv);
-      });
-    }
-  
-    // Display the details of a specific country by its ID
-    function showCountryDetails(id) {
-      const country = countriesData.find(c => c.id === id);
-    
-      if (country) {
-        countriesListDiv.style.display = "none";
-        countryDetailsDiv.style.display = "block";
-    
-        countryInfoDiv.innerHTML = `
-          <p><strong>Name:</strong> ${country.name}</p>
-          <p><strong>Population:</strong> ${country.population}</p>
-          <p><strong>Capital:</strong> ${country.capital}</p>
-        `;
-      }
-    }
-  
-    // Go back to the list of countries
-    function goBackToList() {
-      countriesListDiv.style.display = "block";
-      countryDetailsDiv.style.display = "none";
-    }
-  
-    // Add event listener to go back button
-    goBackButton.addEventListener("click", goBackToList);
-    
-    // Initialize the UI
-    displayCountries();
-  });
+export default CountryList;
